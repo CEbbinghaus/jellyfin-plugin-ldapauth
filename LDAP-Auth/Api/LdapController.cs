@@ -17,22 +17,14 @@ namespace Jellyfin.Plugin.LDAP_Auth.Api
     /// <summary>
     /// The LDAP api controller.
     /// </summary>
+    /// <param name="appHost">The application host to get the LDAP Authentication Provider from.</param>
     [ApiController]
     [Authorize(Policy = Policies.RequiresElevation)]
     [Route("[controller]")]
     [Produces(MediaTypeNames.Application.Json)]
-    public class LdapController : ControllerBase
+    public class LdapController(IApplicationHost appHost) : ControllerBase
     {
-        private readonly LdapAuthenticationProviderPlugin _ldapAuthenticationProvider;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LdapController"/> class.
-        /// </summary>
-        /// <param name="appHost">The application host to get the LDAP Authentication Provider from.</param>
-        public LdapController(IApplicationHost appHost)
-        {
-            _ldapAuthenticationProvider = appHost.GetExports<LdapAuthenticationProviderPlugin>(false).First();
-        }
+        private readonly LdapAuthenticationProviderPlugin _ldapAuthenticationProvider = appHost.GetExports<LdapAuthenticationProviderPlugin>(false).First();
 
         /// <summary>
         /// Tests the server connection and bind settings.
